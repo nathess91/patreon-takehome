@@ -6,24 +6,45 @@
     <title>Patreon Lightbox</title>
 
     <link rel="stylesheet" type="text/css" href="styles.css">
+    <link href="https://fonts.googleapis.com/css?family=Roboto:300,400,500" rel="stylesheet">
   </head>
   <body>
 
-    <div class="container">
-      <div class="arrow-container">
-        <a id="previous-button" class="arrow" onclick="previousImage()">&#10094;</a>
-      </div>
-      <div id="featured">
-      </div>
-      <div class="arrow-container">
-        <a id="next-button" class="arrow" onclick="nextImage()">&#10095;</a>
-      </div>
-    </div>
+    <div class="page-container">
 
-    <div class="caption-container">
-      <p id="caption"></p>
-    </div>
-    <div id="gallery">
+      <img src="images/jif_logo.png" width="10%" class="center-block margin-top-75" />
+
+      <p class="text-center white">
+        The most controversially-named gif search engine.
+        <br />
+        Go argue with your friends about it.
+      </p>
+
+      <form id="search-form" class="text-center margin-top-50">
+    		<label class="hidden">Search Gifs</label>
+        <br />
+    		<input type="text" id="gif-input" placeholder="Search" />
+    		<input type="submit" value="Go!" />
+  		</form>
+
+      <div class="container">
+        <div class="arrow-container">
+          <a id="previous-button" class="arrow hidden" onclick="previousImage()">&#10094;</a>
+        </div>
+        <div id="featured">
+        </div>
+        <div class="arrow-container">
+          <a id="next-button" class="arrow hidden" onclick="nextImage()">&#10095;</a>
+        </div>
+      </div>
+
+      <div class="caption-container">
+        <p id="caption"></p>
+      </div>
+
+      <div id="gallery">
+      </div>
+
     </div>
 
   <script type="text/javascript" src="app.js"></script>
