@@ -1,0 +1,14 @@
+.gallery {
+  display: flex;
+  justify-content: space-between;
+}
+
+.col {
+  display: inline-block;
+  /*width: 23%;*/
+  /*padding: 2px;*/
+}
+
+.gallery-image {
+  height: 100px;
+}

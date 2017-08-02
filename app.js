@@ -5,11 +5,17 @@ const giphyUrl = 'https://api.giphy.com/v1/gifs/search?q=sharks&api_key=72a030c9
 onSuccess = (json) => {
   json.data.forEach((gif, i) => {
     const gallery = document.getElementById('gallery');
-    let img = document.createElement('img');
+    // create parent column div
+    const col = document.createElement('div');
+    col.setAttribute('class', 'col');
+    // create image element
+    const img = document.createElement('img');
 
-    img.src = gif.images.fixed_height.url;
+    // append image to div
+    col.innerHTML = "<img src='" + gif.images.fixed_height.url + "' class='gallery-image' />";
 
-    gallery.appendChild(img);
+    // append div to gallery
+    gallery.appendChild(col);
   });
 }
 
