@@ -4,8 +4,17 @@ const giphyUrl = 'https://api.giphy.com/v1/gifs/search?q=sharks&api_key=72a030c9
 
 onSuccess = (json) => {
   json.data.forEach((gif, i) => {
-    document.getElementById()
+    const gallery = document.getElementById('gallery');
+    let img = document.createElement('img');
+
+    img.src = gif.images.fixed_height.url;
+
+    gallery.appendChild(img);
   });
+}
+
+onError = (status) => {
+  console.log(`Error: status ${status}`)
 }
 
 ajaxCall = () => {
@@ -16,9 +25,9 @@ ajaxCall = () => {
       // on success
       const res = JSON.parse(xmlhttp.responseText);
       onSuccess(res);
-    } else {
-      // error
-      console.log('Something is wrong!');
+    }
+    else if (xmlhttp.status !== 200 && xmlhttp.status !== 0) {
+      onError(xmlhttp.status);
     }
   }
 
