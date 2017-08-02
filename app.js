@@ -9,6 +9,7 @@ getCaption = (username, source) => {
 }
 
 showAllGifs = (json) => {
+  document.getElementById('description').style.display = 'none';
   document.getElementById('featured').innerHTML = "<img src='" + json.data[0].images.fixed_height.url + "' class='featured-image' id='0' />"
   document.getElementById('caption').innerHTML = '<p>Source: ' + getCaption(json.data[0].username, json.data[0].source_tld) + '</p>'
 
