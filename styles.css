@@ -85,6 +85,10 @@ html, body {
   height: 100px;
 }
 
+.gallery-image:hover {
+  cursor: pointer;
+}
+
 .featured-image {
   display: block;
   margin-left: auto;
