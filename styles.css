@@ -5,10 +5,16 @@
 
 .col {
   display: inline-block;
-  /*width: 23%;*/
+  /*width: 10%;*/
   /*padding: 2px;*/
 }
 
 .gallery-image {
   height: 100px;
+}
+
+.featured-image {
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
 }
