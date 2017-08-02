@@ -2,14 +2,59 @@
 <html>
   <head>
     <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Patreon Lightbox</title>
 
     <link rel="stylesheet" type="text/css" href="styles.css">
+    <link href="https://fonts.googleapis.com/css?family=Roboto:300,400,500" rel="stylesheet">
+    <script src="https://use.fontawesome.com/ad918cbf28.js"></script>
   </head>
   <body>
 
-    <h1>test</h1>
+    <div class="page-container">
+
+      <img src="images/jif_logo.png" width="10%" class="center-block margin-top-50" />
+
+      <p id="description" class="text-center white">
+        The most controversially-named gif search engine.
+        <br />
+        Go argue with your friends about it.
+      </p>
+
+      <form id="search-form" class="text-center margin-bottom-50">
+    		<label class="hidden">Search Gifs</label>
+        <br />
+    		<input type="text" id="gif-input" placeholder="Search" autofocus />
+    		<button id="submit" type="submit">
+          <i class="fa fa-search" aria-hidden="true"></i>
+        </button>
+  		</form>
+
+      <div class="featured-container margin-bottom-25">
+        <div class="arrow-container">
+          <a id="previous-button" class="arrow hidden" onclick="previousImage()">&#10094;</a>
+        </div>
+        <div id="featured-image-container">
+          <div id="featured">
+          </div>
+          <div id="caption" class="text-center">
+          </div>
+        </div>
+        <div class="arrow-container">
+          <a id="next-button" class="arrow hidden" onclick="nextImage()">&#10095;</a>
+        </div>
+      </div>
+
+      <div id="gallery">
+      </div>
+
+      <button id="load-more" class="center-block hidden margin-top-25" onclick="loadMore()">
+        LOAD MORE
+      </button>
+
+    </div>
 
   <script type="text/javascript" src="app.js"></script>
+  <script src="https://use.fontawesome.com/ad918cbf28.js"></script>
   </body>
 </html>
