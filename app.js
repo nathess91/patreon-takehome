@@ -42,6 +42,13 @@ nextImage = () => {
   start++;
 
   document.getElementById('featured').innerHTML = "<img src='" + currentImage.src + "' class='featured-image' id='" + currentImage.id + "' />";
+  const pTags = document.getElementsByTagName('p');
+  // changes featured image caption to selected image caption
+  for (let tag in pTags) {
+    if (pTags[tag].id === currentImage.id) {
+      document.getElementById('caption').innerHTML = '<p>' + pTags[tag].innerText + '</p>';
+    }
+  }
 }
 
 previousImage = () => {
@@ -55,6 +62,26 @@ previousImage = () => {
   }
 
   document.getElementById('featured').innerHTML = "<img src='" + currentImage.src + "' class='featured-image' id='" + currentImage.id + "' />";
+
+  const pTags = document.getElementsByTagName('p');
+  // changes featured image caption to selected image caption
+  for (let tag in pTags) {
+    if (pTags[tag].id === currentImage.id) {
+      document.getElementById('caption').innerHTML = '<p>' + pTags[tag].innerText + '</p>';
+    }
+  }
+}
+
+selectImage = (src, id) => {
+  // changes featured image source to selected image source
+  document.getElementById('featured').innerHTML = "<img src='" + src + "' class='featured-image' id='" + id + "' />";
+  const pTags = document.getElementsByTagName('p');
+  // changes featured image caption to selected image caption
+  for (let tag in pTags) {
+    if (pTags[tag].id === id) {
+      document.getElementById('caption').innerHTML = '<p>' + pTags[tag].innerText + '</p>';
+    }
+  }
 }
 
 onSuccess = (json) => {
@@ -96,18 +123,6 @@ searchGifs = () => {
     document.getElementById('next-button').style.visibility = 'visible';
     document.getElementById('previous-button').style.visibility = 'visible';
   });
-}
-
-selectImage = (src, id) => {
-  // changes featured image source to selected image source
-  document.getElementById('featured').innerHTML = "<img src='" + src + "' class='featured-image' id='" + id + "' />";
-  const pTags = document.getElementsByTagName('p');
-  // changes featured image caption to selected image caption
-  for (let tag in pTags) {
-    if (pTags[tag].id === id) {
-      document.getElementById('caption').innerHTML = '<p>' + pTags[tag].innerText + '</p>';
-    }
-  }
 }
 
 document.addEventListener('DOMContentLoaded', () => {
