@@ -1,11 +1,3 @@
-const apiKey = '&api_key=72a030c9d43c47f1a4a31d87f636be6f';
-
-const giphyUrl = 'https://api.giphy.com/v1/gifs/search?q=';
-
-// get caption
-// return no source
-// create element to contain caption
-
 getCaption = (username, source) => {
   if (username) {
     return username;
@@ -18,7 +10,7 @@ getCaption = (username, source) => {
 
 showAllGifs = (json) => {
   document.getElementById('featured').innerHTML = "<img src='" + json.data[0].images.fixed_height.url + "' class='featured-image' id='0' />"
-  document.getElementById('caption').innerHTML = '<p>' + getCaption(json.data[0].username, json.data[0].source_tld) + '</p>'
+  document.getElementById('caption').innerHTML = '<p>Source: ' + getCaption(json.data[0].username, json.data[0].source_tld) + '</p>'
 
   json.data.forEach((gif, i) => {
     const gallery = document.getElementById('gallery');
@@ -28,10 +20,11 @@ showAllGifs = (json) => {
     // create image element
     const img = document.createElement('img');
     // append image to div
-    col.innerHTML = "<img src='" + gif.images.fixed_height.url + "' class='gallery-image' onclick='selectImage(this.src,this.id)' id='" + i + "' /> <p id='" + i + "' style='display:none'>" + getCaption(gif.username, gif.source_tld) + "</p>";
+    col.innerHTML = "<img src='" + gif.images.fixed_height.url + "' class='gallery-image' onclick='selectImage(this.src,this.id)' id='" + i + "' /> <p id='" + i + "' style='display:none'>Source: " + getCaption(gif.username, gif.source_tld) + "</p>";
     // append div to gallery
     gallery.appendChild(col);
   });
+  document.getElementById('load-more').style.visibility = 'visible';
 }
 
 let start = 0;
@@ -93,10 +86,21 @@ onError = (xhr, status) => {
   console.dir(xhr);
 }
 
+const API_KEY = '72a030c9d43c47f1a4a31d87f636be6f';
+const BASE_URL = 'https://api.giphy.com/v1/gifs/';
+const ENDPOINT = 'search';
+const LIMIT = 7;
+let query = {
+  text: null,
+  offset: 0,
+  request() {
+    return `${BASE_URL}${ENDPOINT}?q=${this.text}&limit=${LIMIT}&offset=${this.offset}&api_key=${API_KEY}`;
+  }
+};
 
 ajaxCall = () => {
+  query.text = document.getElementById('gif-input').value;
   const xhr = new XMLHttpRequest();
-  let query = document.getElementById('gif-input').value;
 
   xhr.onreadystatechange = () => {
     if (xhr.readyState === 4 && xhr.status === 200) {
@@ -109,7 +113,7 @@ ajaxCall = () => {
     }
   }
 
-  xhr.open('GET', giphyUrl + query + apiKey, true);
+  xhr.open('GET', query.request(), true);
   xhr.send();
 }
 
@@ -123,6 +127,26 @@ searchGifs = () => {
     document.getElementById('next-button').style.visibility = 'visible';
     document.getElementById('previous-button').style.visibility = 'visible';
   });
+}
+
+loadMore = () => {
+  document.getElementById('gallery').innerHTML = '';
+  query.offset = Math.floor(Math.random() * 25);
+  const xhr = new XMLHttpRequest();
+
+  xhr.onreadystatechange = () => {
+    if (xhr.readyState === 4 && xhr.status === 200) {
+      // on success
+      const res = JSON.parse(xhr.responseText);
+      onSuccess(res);
+    }
+    else if (xhr.status !== 200 && xhr.status !== 0) {
+      onError(xhr, xhr.status);
+    }
+  }
+
+  xhr.open('GET', query.request(), true);
+  xhr.send();
 }
 
 document.addEventListener('DOMContentLoaded', () => {

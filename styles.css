@@ -72,9 +72,10 @@ html, body {
   color: #FFFFFF;
 }
 
-.gallery {
+#gallery {
   display: flex;
   justify-content: space-between;
+  overflow: hidden;
 }
 
 .col {
@@ -95,7 +96,7 @@ html, body {
   margin-right: auto;
 }
 
-.container {
+.featured-container {
   display: flex;
   justify-content: center;
 }
@@ -108,10 +109,55 @@ html, body {
 .arrow-container {
   height: 100%;
   align-self: center;
+  padding: 50px;
+}
+
+.arrow {
+  font-size: 3em;
+  color: #FFFFFF;
+  padding: 2px 15px 2px 15px;
+  border-radius: 2px;
+  transition: 0.6s ease;
 }
 
 .arrow:hover {
   cursor: pointer;
+  background-color: #000000;
+}
+
+#gif-input {
+  font-size: 18px;
+  border: none;
+  padding: 6px 12px;
+  line-height: 1.42857143;
+  width: 300px;
+}
+
+#submit {
+  padding: 10px 15px 9px 15px;
+  font-size: 16px;
+  border: none;
+  margin-left: -5px;
+  background-color: #50e3c2;
+}
+
+#submit:hover, #load-more:hover {
+  cursor: pointer;
+  /*background-color: #0ebb94;*/
+  /*color: #FFFFFF;*/
+}
+
+#caption p {
+  font-size: 12px;
+  color: #FFFFFF;
+}
+
+#load-more {
+  padding: 10px 25px 9px 25px;
+  font-size: 16px;
+  border: none;
+  background-color: #50e3c2;
+  font-weight: 500;
 }
 
 @media (min-width: 768px) {
