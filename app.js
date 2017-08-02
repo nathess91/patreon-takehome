@@ -1,6 +1,6 @@
-const apiKey = '72a030c9d43c47f1a4a31d87f636be6f';
+const apiKey = '&api_key=72a030c9d43c47f1a4a31d87f636be6f';
 
-const giphyUrl = 'https://api.giphy.com/v1/gifs/search?q=puppies&api_key=72a030c9d43c47f1a4a31d87f636be6f';
+const giphyUrl = 'https://api.giphy.com/v1/gifs/search?q=';
 
 showAllGifs = (json) => {
   document.getElementById('featured').innerHTML = "<img src='" + json.data[0].images.fixed_height.url + "' class='featured-image' id='0' />"
@@ -45,28 +45,43 @@ onSuccess = (json) => {
   showAllGifs(json);
 }
 
-onError = (status) => {
-  console.log(`Error: status ${status}`)
+onError = (xhr, status) => {
+  console.log(`Error: status ${status}`);
+  console.dir(xhr);
 }
 
-ajaxCall = () => {
-  const xmlhttp = new XMLHttpRequest();
 
-  xmlhttp.onreadystatechange = () => {
-    if (xmlhttp.readyState === 4 && xmlhttp.status === 200) {
+ajaxCall = () => {
+  const xhr = new XMLHttpRequest();
+  let query = document.getElementById('gif-input').value;
+
+  xhr.onreadystatechange = () => {
+    if (xhr.readyState === 4 && xhr.status === 200) {
       // on success
-      const res = JSON.parse(xmlhttp.responseText);
+      const res = JSON.parse(xhr.responseText);
       onSuccess(res);
     }
-    else if (xmlhttp.status !== 200 && xmlhttp.status !== 0) {
-      onError(xmlhttp.status);
+    else if (xhr.status !== 200 && xhr.status !== 0) {
+      onError(xhr, xhr.status);
     }
   }
 
-  xmlhttp.open('GET', giphyUrl, true);
-  xmlhttp.send();
+  xhr.open('GET', giphyUrl + query + apiKey, true);
+  xhr.send();
+}
+
+searchGifs = () => {
+  document.getElementById('search-form').addEventListener('submit', (e) => {
+    e.preventDefault();
+    // clear gallery
+    document.getElementById('gallery').innerHTML = '';
+    ajaxCall();
+    // show arrows
+    document.getElementById('next-button').style.visibility = 'visible';
+    document.getElementById('previous-button').style.visibility = 'visible';
+  });
 }
 
 document.addEventListener('DOMContentLoaded', () => {
-  ajaxCall();
+  searchGifs();
 });
