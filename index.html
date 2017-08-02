@@ -9,11 +9,21 @@
   </head>
   <body>
 
-    <div id="gallery">
+    <div class="container">
+      <div class="arrow-container">
+        <a id="previous-button" class="arrow" onclick="previousImage()">&#10094;</a>
+      </div>
       <div id="featured">
       </div>
-      <button id="previous-button" onclick="previousImage()">PREVIOUS</button>
-      <button onclick="nextImage()">NEXT</button>
+      <div class="arrow-container">
+        <a id="next-button" class="arrow" onclick="nextImage()">&#10095;</a>
+      </div>
+    </div>
+
+    <div class="caption-container">
+      <p id="caption"></p>
+    </div>
+    <div id="gallery">
     </div>
 
   <script type="text/javascript" src="app.js"></script>

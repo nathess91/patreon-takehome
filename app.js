@@ -3,7 +3,7 @@ const apiKey = '72a030c9d43c47f1a4a31d87f636be6f';
 const giphyUrl = 'https://api.giphy.com/v1/gifs/search?q=puppies&api_key=72a030c9d43c47f1a4a31d87f636be6f';
 
 showAllGifs = (json) => {
-  // default first picture inside featured div
+  document.getElementById('featured').innerHTML = "<img src='" + json.data[0].images.fixed_height.url + "' class='featured-image' id='0' />"
   json.data.forEach((gif, i) => {
     const gallery = document.getElementById('gallery');
     // create parent column div
