@@ -12,7 +12,7 @@ showAllGifs = (json) => {
     // create image element
     const img = document.createElement('img');
     // append image to div
-    col.innerHTML = "<img src='" + gif.images.fixed_height.url + "' class='gallery-image' id='" + i + "' />"
+    col.innerHTML = "<img src='" + gif.images.fixed_height.url + "' class='gallery-image' onclick='selectImage(this.src,this.id)' id='" + i + "' />"
     // append div to gallery
     gallery.appendChild(col);
   });
@@ -80,6 +80,10 @@ searchGifs = () => {
     document.getElementById('next-button').style.visibility = 'visible';
     document.getElementById('previous-button').style.visibility = 'visible';
   });
+}
+
+selectImage = (src, id) => {
+  document.getElementById('featured').innerHTML = "<img src='" + src + "' class='featured-image' id='" + id + "' />";
 }
 
 document.addEventListener('DOMContentLoaded', () => {
