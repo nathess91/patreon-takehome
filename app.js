@@ -8,10 +8,13 @@ getCaption = (username, source) => {
   }
 }
 
+setFeatured = (imgUrl, username, source) => {
+  document.getElementById('featured').innerHTML = "<img src='" + imgUrl + "' class='featured-image' id='0' />";
+  document.getElementById('caption').innerHTML = '<p>Source: ' + getCaption(username, source) + '</p>';
+}
+
 showAllGifs = (json) => {
-  document.getElementById('description').style.display = 'none';
-  document.getElementById('featured').innerHTML = "<img src='" + json.data[0].images.fixed_height.url + "' class='featured-image' id='0' />"
-  document.getElementById('caption').innerHTML = '<p>Source: ' + getCaption(json.data[0].username, json.data[0].source_tld) + '</p>'
+  setFeatured(json.data[0].images.fixed_height.url, json.data[0].username, json.data[0].source_tld);
 
   json.data.forEach((gif, i) => {
     const gallery = document.getElementById('gallery');
@@ -21,58 +24,53 @@ showAllGifs = (json) => {
     // create image element
     const img = document.createElement('img');
     // append image to div
-    col.innerHTML = "<img src='" + gif.images.fixed_height.url + "' class='gallery-image' onclick='selectImage(this.src,this.id)' id='" + i + "' /> <p id='" + i + "' style='display:none'>Source: " + getCaption(gif.username, gif.source_tld) + "</p>";
+    col.innerHTML = "<img src='" + gif.images.fixed_height.url + "' class='gallery-image' onclick='selectImage(parseInt(this.id))' id='" + i + "' /> <p id='" + i + "' style='display:none'>Source: " + getCaption(gif.username, gif.source_tld) + "</p>";
     // append div to gallery
     gallery.appendChild(col);
   });
-  document.getElementById('load-more').style.visibility = 'visible';
+  loopImages(imagesIndex);
 }
 
-let start = 0;
+let imagesIndex = 0;
 
-nextImage = () => {
+nextImage = (n) => {
+  loopImages(imagesIndex += n);
+}
+
+selectImage = (n) => {
+  loopImages(imagesIndex = n);
+}
+
+loopImages = (n) => {
+  console.log(n);
+  console.log(imagesIndex);
   const images = document.getElementsByClassName('gallery-image');
-  let currentImage = images[start];
-  start++;
+  const prevButton = document.getElementById('previous-button');
 
-  document.getElementById('featured').innerHTML = "<img src='" + currentImage.src + "' class='featured-image' id='" + currentImage.id + "' />";
-  const pTags = document.getElementsByTagName('p');
-  // changes featured image caption to selected image caption
-  for (let tag in pTags) {
-    if (pTags[tag].id === currentImage.id) {
-      document.getElementById('caption').innerHTML = '<p>' + pTags[tag].innerText + '</p>';
-    }
-  }
-}
+  prevButton.disabled = false;
+  prevButton.className = 'arrow';
 
-previousImage = () => {
-  const images = document.getElementsByClassName('gallery-image');
-  let currentImage = images[start];
-  start--;
-
-  // if beginning of images, disable previous image functionality
-  if (currentImage === images[0]) {
-    document.getElementById('previous-button').style.visibility = 'hidden';
+  if (n >= images.length) {
+    imagesIndex = 0;
+    loadMore();
+    // put this somewhere else - throws error
+    document.getElementById('gallery').innerHTML = '';
   }
 
-  document.getElementById('featured').innerHTML = "<img src='" + currentImage.src + "' class='featured-image' id='" + currentImage.id + "' />";
-
-  const pTags = document.getElementsByTagName('p');
-  // changes featured image caption to selected image caption
-  for (let tag in pTags) {
-    if (pTags[tag].id === currentImage.id) {
-      document.getElementById('caption').innerHTML = '<p>' + pTags[tag].innerText + '</p>';
-    }
+  if (n <= 0) {
+    prevButton.disabled = true;
+    prevButton.className = 'arrow disabled';
+    imagesIndex = 0;
   }
-}
 
-selectImage = (src, id) => {
-  // changes featured image source to selected image source
-  document.getElementById('featured').innerHTML = "<img src='" + src + "' class='featured-image' id='" + id + "' />";
+  // set featured image
+  document.getElementById('featured').innerHTML = "<img src='" + images[imagesIndex].src + "' class='featured-image' id='" + images[imagesIndex].id + "' />";
+
+  // update caption
   const pTags = document.getElementsByTagName('p');
-  // changes featured image caption to selected image caption
+
   for (let tag in pTags) {
-    if (pTags[tag].id === id) {
+    if (pTags[tag].id == images[imagesIndex].id) {
       document.getElementById('caption').innerHTML = '<p>' + pTags[tag].innerText + '</p>';
     }
   }
@@ -131,7 +129,6 @@ searchGifs = () => {
 }
 
 loadMore = () => {
-  document.getElementById('gallery').innerHTML = '';
   query.offset = Math.floor(Math.random() * 25);
   const xhr = new XMLHttpRequest();
 

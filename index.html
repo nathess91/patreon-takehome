@@ -31,8 +31,8 @@
   		</form>
 
       <div class="featured-container margin-bottom-25">
-        <div class="arrow-container">
-          <a id="previous-button" class="arrow hidden" onclick="previousImage()">&#10094;</a>
+        <div class="arrow-container" onclick="nextImage(-1)">
+          <a id="previous-button" class="arrow hidden">&#10094;</a>
         </div>
         <div id="featured-image-container">
           <div id="featured">
@@ -40,17 +40,13 @@
           <div id="caption" class="text-center">
           </div>
         </div>
-        <div class="arrow-container">
-          <a id="next-button" class="arrow hidden" onclick="nextImage()">&#10095;</a>
+        <div class="arrow-container" onclick="nextImage(1)">
+          <a id="next-button" class="arrow hidden">&#10095;</a>
         </div>
       </div>
 
       <div id="gallery">
       </div>
-
-      <button id="load-more" class="center-block hidden margin-top-25" onclick="loadMore()">
-        LOAD MORE
-      </button>
 
     </div>
 
