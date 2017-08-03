@@ -1,14 +1,29 @@
-keyPressed = (e) => {
+// object.onkeyup = function(){myScript};
+
+keyDown = (e) => {
   e = e || window.event;
 
-  if (e.keyCode == '37') {
+  if (e.keyCode === 37) {
+    document.getElementById('previous-button').className = 'arrow hovered';
     nextImage(-1);
-  } else if (e.keyCode == '39') {
+  } else if (e.keyCode === 39) {
+    document.getElementById('next-button').className = 'arrow hovered';
     nextImage(1);
   }
 }
 
-document.onkeydown = keyPressed;
+keyUp = (e) => {
+  e = e || window.event;
+
+  if (e.keyCode === 37) {
+    document.getElementById('previous-button').className = document.getElementById('previous-button').className.replace(' hovered', '');
+  } else if (e.keyCode === 39) {
+    document.getElementById('next-button').className = document.getElementById('next-button').className.replace(' hovered', '');
+  }
+}
+
+document.onkeydown = keyDown;
+document.onkeyup = keyUp;
 
 getCaption = (username, source) => {
   if (username) {
@@ -54,20 +69,13 @@ selectImage = (n) => {
 }
 
 loopImages = (n) => {
-  console.log(n);
-  console.log(imagesIndex);
+  console.log('this is the n from html (an integer)', n);
+  console.log('This is imagesIndex (an integer): ' + imagesIndex);
   const images = document.getElementsByClassName('gallery-image');
   const prevButton = document.getElementById('previous-button');
 
   prevButton.disabled = false;
-  prevButton.className = 'arrow';
-
-  if (n >= images.length) {
-    imagesIndex = 0;
-    loadMore();
-    // put this somewhere else - throws error
-    document.getElementById('gallery').innerHTML = '';
-  }
+  prevButton.className = prevButton.className.replace(' disabled', '');
 
   if (n <= 0) {
     prevButton.disabled = true;
@@ -75,20 +83,28 @@ loopImages = (n) => {
     imagesIndex = 0;
   }
 
-  // set featured image
-  document.getElementById('featured').innerHTML = "<img src='" + images[imagesIndex].src + "' class='featured-image' id='" + images[imagesIndex].id + "' />";
+  if (n > 6) {
+    loadMore();
+    imagesIndex = 0;
+  }
 
-  // update caption
-  const pTags = document.getElementsByTagName('p');
+  if (n <= 6) {
+    // set featured image
+    document.getElementById('featured').innerHTML = "<img src='" + images[imagesIndex].src + "' class='featured-image' id='" + images[imagesIndex].id + "' />";
 
-  for (let tag in pTags) {
-    if (pTags[tag].id == images[imagesIndex].id) {
-      document.getElementById('caption').innerHTML = '<p>' + pTags[tag].innerText + '</p>';
+    // update caption
+    const pTags = document.getElementsByTagName('p');
+
+    for (let tag in pTags) {
+      if (pTags[tag].id == images[imagesIndex].id) {
+        document.getElementById('caption').innerHTML = '<p>' + pTags[tag].innerText + '</p>';
+      }
     }
   }
 }
 
 onSuccess = (json) => {
+  document.getElementById('gif-input').style.outline = 'none';
   showAllGifs(json);
 }
 
@@ -141,8 +157,11 @@ searchGifs = () => {
 }
 
 loadMore = () => {
+  // clear out the gallery
+  document.getElementById('gallery').innerHTML = '';
   query.offset = Math.floor(Math.random() * 25);
   const xhr = new XMLHttpRequest();
+
 
   xhr.onreadystatechange = () => {
     if (xhr.readyState === 4 && xhr.status === 200) {
