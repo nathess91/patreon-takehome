@@ -1,3 +1,15 @@
+keyPressed = (e) => {
+  e = e || window.event;
+
+  if (e.keyCode == '37') {
+    nextImage(-1);
+  } else if (e.keyCode == '39') {
+    nextImage(1);
+  }
+}
+
+document.onkeydown = keyPressed;
+
 getCaption = (username, source) => {
   if (username) {
     return username;
