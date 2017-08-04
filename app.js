@@ -83,12 +83,12 @@ loopImages = (n) => {
     imagesIndex = 0;
   }
 
-  if (n > 6) {
+  if (n > LIMIT - 1) {
     loadMore();
     imagesIndex = 0;
   }
 
-  if (n <= 6) {
+  if (n <= LIMIT - 1) {
     // set featured image
     document.getElementById('featured').innerHTML = "<img src='" + images[imagesIndex].src + "' class='featured-image' id='" + images[imagesIndex].id + "' />";
 
@@ -116,7 +116,12 @@ onError = (xhr, status) => {
 const API_KEY = '72a030c9d43c47f1a4a31d87f636be6f';
 const BASE_URL = 'https://api.giphy.com/v1/gifs/';
 const ENDPOINT = 'search';
-const LIMIT = 7;
+let LIMIT = 7;
+
+if (window.innerWidth < 768) {
+  LIMIT = 6;
+}
+
 let query = {
   text: null,
   offset: 0,

@@ -186,3 +186,44 @@ input:-webkit-autofill {
     width: 1170px;
   }
 }
+
+@media screen and (max-width: 768px) {
+  #logo {
+    width: 25%;
+  }
+
+  #description {
+    font-size: 12px;
+  }
+
+  #gif-input {
+    width: 200px;
+  }
+
+  .arrow-container {
+    padding: 0;
+  }
+
+  #featured {
+    display: flex;
+    height: 200px;
+  }
+
+  .featured-image {
+    max-width: 200px;
+    align-self: center;
+  }
+
+  #gallery {
+    flex-wrap: wrap;
+    overflow: visible;
+  }
+
+  .gallery-image {
+    width: 100px;
+  }
+
+  .margin-bottom-50 {
+    margin-bottom: 25px;
+  }
+}
