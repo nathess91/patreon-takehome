@@ -1,3 +1,30 @@
+// object.onkeyup = function(){myScript};
+
+keyDown = (e) => {
+  e = e || window.event;
+
+  if (e.keyCode === 37) {
+    document.getElementById('previous-button').className = 'arrow hovered';
+    nextImage(-1);
+  } else if (e.keyCode === 39) {
+    document.getElementById('next-button').className = 'arrow hovered';
+    nextImage(1);
+  }
+}
+
+keyUp = (e) => {
+  e = e || window.event;
+
+  if (e.keyCode === 37) {
+    document.getElementById('previous-button').className = document.getElementById('previous-button').className.replace(' hovered', '');
+  } else if (e.keyCode === 39) {
+    document.getElementById('next-button').className = document.getElementById('next-button').className.replace(' hovered', '');
+  }
+}
+
+document.onkeydown = keyDown;
+document.onkeyup = keyUp;
+
 getCaption = (username, source) => {
   if (username) {
     return username;
@@ -8,77 +35,95 @@ getCaption = (username, source) => {
   }
 }
 
+setFeatured = (imgUrl, username, source) => {
+  document.getElementById('featured').innerHTML = "<img src='" + imgUrl + "' class='featured-image' id='0' />";
+  document.getElementById('caption').innerHTML = '<p>Source: ' + getCaption(username, source) + '</p>';
+}
+
 showAllGifs = (json) => {
-  document.getElementById('description').style.display = 'none';
-  document.getElementById('featured').innerHTML = "<img src='" + json.data[0].images.fixed_height.url + "' class='featured-image' id='0' />"
-  document.getElementById('caption').innerHTML = '<p>Source: ' + getCaption(json.data[0].username, json.data[0].source_tld) + '</p>'
+  if (json.data.length === 0) {
+    document.getElementById('error-message').innerHTML = "<p class='text-center white'>No results found :(</p>";
+  } else {
+    document.getElementById('next-button').style.visibility = 'visible';
+    document.getElementById('previous-button').style.visibility = 'visible';
+    setFeatured(json.data[0].images.fixed_height.url, json.data[0].username, json.data[0].source_tld);
 
-  json.data.forEach((gif, i) => {
-    const gallery = document.getElementById('gallery');
-    // create parent column div
-    const col = document.createElement('div');
-    col.setAttribute('class', 'col');
-    // create image element
-    const img = document.createElement('img');
-    // append image to div
-    col.innerHTML = "<img src='" + gif.images.fixed_height.url + "' class='gallery-image' onclick='selectImage(this.src,this.id)' id='" + i + "' /> <p id='" + i + "' style='display:none'>Source: " + getCaption(gif.username, gif.source_tld) + "</p>";
-    // append div to gallery
-    gallery.appendChild(col);
-  });
-  document.getElementById('load-more').style.visibility = 'visible';
+    json.data.forEach((gif, i) => {
+      const gallery = document.getElementById('gallery');
+      // create parent column div
+      const col = document.createElement('div');
+      col.setAttribute('class', 'col');
+      // create image element
+      const img = document.createElement('img');
+      // append image to div
+      col.innerHTML = "<img src='" + gif.images.fixed_height.url + "' class='gallery-image' onclick='selectImage(parseInt(this.id))' id='" + i + "' /> <p id='" + i + "' style='display:none'>Source: " + getCaption(gif.username, gif.source_tld) + "</p>";
+      // append div to gallery
+      gallery.appendChild(col);
+    });
+    loopImages(imagesIndex);
+  }
 }
 
-let start = 0;
+let imagesIndex = 0;
 
-nextImage = () => {
+nextImage = (n) => {
+  loopImages(imagesIndex += n);
+}
+
+selectImage = (n) => {
+  loopImages(imagesIndex = n);
+}
+
+loopImages = (n) => {
+  console.log('this is the n from html (an integer)', n);
+  console.log('This is imagesIndex (an integer): ' + imagesIndex);
   const images = document.getElementsByClassName('gallery-image');
-  let currentImage = images[start];
-  start++;
+  const prevButton = document.getElementById('previous-button');
 
-  document.getElementById('featured').innerHTML = "<img src='" + currentImage.src + "' class='featured-image' id='" + currentImage.id + "' />";
-  const pTags = document.getElementsByTagName('p');
-  // changes featured image caption to selected image caption
-  for (let tag in pTags) {
-    if (pTags[tag].id === currentImage.id) {
-      document.getElementById('caption').innerHTML = '<p>' + pTags[tag].innerText + '</p>';
+  prevButton.disabled = false;
+  prevButton.className = prevButton.className.replace(' disabled', '');
+
+  if (n <= 0) {
+    prevButton.disabled = true;
+    prevButton.className = 'arrow disabled';
+    imagesIndex = 0;
+  }
+
+  if (n > LIMIT - 1) {
+    loadMore();
+    imagesIndex = 0;
+  }
+
+  if (n <= LIMIT - 1) {
+    // set featured image
+    document.getElementById('featured').innerHTML = "<img src='" + images[imagesIndex].src + "' class='featured-image' id='" + images[imagesIndex].id + "' />";
+
+    // set gallery image active state
+    // if featured image id matches gallery image id
+    // gallery image is active
+
+    if (document.getElementById('featured').children[0].id === images[imagesIndex].id) {
+      // console.log('active image: ', images[imagesIndex]);
+      images[imagesIndex].className = 'gallery-image active';
+    } else {
+      for (let img in images) {
+        images[img].className = images[img].className.replace(' active', '');
+      }
     }
-  }
-}
 
-previousImage = () => {
-  const images = document.getElementsByClassName('gallery-image');
-  let currentImage = images[start];
-  start--;
+    // update caption
+    const pTags = document.getElementsByTagName('p');
 
-  // if beginning of images, disable previous image functionality
-  if (currentImage === images[0]) {
-    document.getElementById('previous-button').style.visibility = 'hidden';
-  }
-
-  document.getElementById('featured').innerHTML = "<img src='" + currentImage.src + "' class='featured-image' id='" + currentImage.id + "' />";
-
-  const pTags = document.getElementsByTagName('p');
-  // changes featured image caption to selected image caption
-  for (let tag in pTags) {
-    if (pTags[tag].id === currentImage.id) {
-      document.getElementById('caption').innerHTML = '<p>' + pTags[tag].innerText + '</p>';
-    }
-  }
-}
-
-selectImage = (src, id) => {
-  // changes featured image source to selected image source
-  document.getElementById('featured').innerHTML = "<img src='" + src + "' class='featured-image' id='" + id + "' />";
-  const pTags = document.getElementsByTagName('p');
-  // changes featured image caption to selected image caption
-  for (let tag in pTags) {
-    if (pTags[tag].id === id) {
-      document.getElementById('caption').innerHTML = '<p>' + pTags[tag].innerText + '</p>';
+    for (let tag in pTags) {
+      if (pTags[tag].id === images[imagesIndex].id) {
+        document.getElementById('caption').innerHTML = '<p>' + pTags[tag].innerText + '</p>';
+      }
     }
   }
 }
 
 onSuccess = (json) => {
+  document.getElementById('gif-input').style.outline = 'none';
   showAllGifs(json);
 }
 
@@ -90,7 +135,12 @@ onError = (xhr, status) => {
 const API_KEY = '72a030c9d43c47f1a4a31d87f636be6f';
 const BASE_URL = 'https://api.giphy.com/v1/gifs/';
 const ENDPOINT = 'search';
-const LIMIT = 7;
+let LIMIT = 7;
+
+if (window.innerWidth < 768) {
+  LIMIT = 6;
+}
+
 let query = {
   text: null,
   offset: 0,
@@ -123,17 +173,18 @@ searchGifs = () => {
     e.preventDefault();
     // clear gallery
     document.getElementById('gallery').innerHTML = '';
+    document.getElementById('error-message').innerHTML = '';
     ajaxCall();
-    // show arrows
-    document.getElementById('next-button').style.visibility = 'visible';
-    document.getElementById('previous-button').style.visibility = 'visible';
   });
 }
 
 loadMore = () => {
+  // clear out the gallery
   document.getElementById('gallery').innerHTML = '';
+
   query.offset = Math.floor(Math.random() * 25);
   const xhr = new XMLHttpRequest();
+
 
   xhr.onreadystatechange = () => {
     if (xhr.readyState === 4 && xhr.status === 200) {
