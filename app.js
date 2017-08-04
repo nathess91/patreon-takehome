@@ -41,21 +41,27 @@ setFeatured = (imgUrl, username, source) => {
 }
 
 showAllGifs = (json) => {
-  setFeatured(json.data[0].images.fixed_height.url, json.data[0].username, json.data[0].source_tld);
+  if (json.data.length === 0) {
+    document.getElementById('error-message').innerHTML = "<p class='text-center white'>No results found :(</p>";
+  } else {
+    document.getElementById('next-button').style.visibility = 'visible';
+    document.getElementById('previous-button').style.visibility = 'visible';
+    setFeatured(json.data[0].images.fixed_height.url, json.data[0].username, json.data[0].source_tld);
 
-  json.data.forEach((gif, i) => {
-    const gallery = document.getElementById('gallery');
-    // create parent column div
-    const col = document.createElement('div');
-    col.setAttribute('class', 'col');
-    // create image element
-    const img = document.createElement('img');
-    // append image to div
-    col.innerHTML = "<img src='" + gif.images.fixed_height.url + "' class='gallery-image' onclick='selectImage(parseInt(this.id))' id='" + i + "' /> <p id='" + i + "' style='display:none'>Source: " + getCaption(gif.username, gif.source_tld) + "</p>";
-    // append div to gallery
-    gallery.appendChild(col);
-  });
-  loopImages(imagesIndex);
+    json.data.forEach((gif, i) => {
+      const gallery = document.getElementById('gallery');
+      // create parent column div
+      const col = document.createElement('div');
+      col.setAttribute('class', 'col');
+      // create image element
+      const img = document.createElement('img');
+      // append image to div
+      col.innerHTML = "<img src='" + gif.images.fixed_height.url + "' class='gallery-image' onclick='selectImage(parseInt(this.id))' id='" + i + "' /> <p id='" + i + "' style='display:none'>Source: " + getCaption(gif.username, gif.source_tld) + "</p>";
+      // append div to gallery
+      gallery.appendChild(col);
+    });
+    loopImages(imagesIndex);
+  }
 }
 
 let imagesIndex = 0;
@@ -92,11 +98,24 @@ loopImages = (n) => {
     // set featured image
     document.getElementById('featured').innerHTML = "<img src='" + images[imagesIndex].src + "' class='featured-image' id='" + images[imagesIndex].id + "' />";
 
+    // set gallery image active state
+    // if featured image id matches gallery image id
+    // gallery image is active
+
+    if (document.getElementById('featured').children[0].id === images[imagesIndex].id) {
+      // console.log('active image: ', images[imagesIndex]);
+      images[imagesIndex].className = 'gallery-image active';
+    } else {
+      for (let img in images) {
+        images[img].className = images[img].className.replace(' active', '');
+      }
+    }
+
     // update caption
     const pTags = document.getElementsByTagName('p');
 
     for (let tag in pTags) {
-      if (pTags[tag].id == images[imagesIndex].id) {
+      if (pTags[tag].id === images[imagesIndex].id) {
         document.getElementById('caption').innerHTML = '<p>' + pTags[tag].innerText + '</p>';
       }
     }
@@ -154,16 +173,15 @@ searchGifs = () => {
     e.preventDefault();
     // clear gallery
     document.getElementById('gallery').innerHTML = '';
+    document.getElementById('error-message').innerHTML = '';
     ajaxCall();
-    // show arrows
-    document.getElementById('next-button').style.visibility = 'visible';
-    document.getElementById('previous-button').style.visibility = 'visible';
   });
 }
 
 loadMore = () => {
   // clear out the gallery
   document.getElementById('gallery').innerHTML = '';
+
   query.offset = Math.floor(Math.random() * 25);
   const xhr = new XMLHttpRequest();
 
