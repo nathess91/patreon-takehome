@@ -5,9 +5,8 @@ const LIMIT = (window.innerWidth < 768 ? 6 : 7);
 const previousButton = document.getElementById('previous-button');
 const nextButton = document.getElementById('next-button');
 const images = document.getElementsByClassName('gallery-image');
+const gallery = document.getElementById('gallery');
 
-
-// TODO: add clear gallery
 
 document.onkeydown = (addHoveredClass = (e) => {
   if (e.keyCode === 37) {
@@ -66,7 +65,6 @@ showAllGifs = (json) => {
     setInitialFeaturedImage(json.data[0].images.fixed_height.url, json.data[0].username, json.data[0].source_tld);
 
     json.data.forEach((gif, i) => {
-      const gallery = document.getElementById('gallery');
       const col = document.createElement('div');
       const img = document.createElement('img');
 
@@ -111,23 +109,21 @@ checkCurrentNumber = (num) => {
   }
 
   if (num > LIMIT - 1) {
-    ajaxCall(null, Math.floor(Math.random() * 25));
+    ajaxCall(Math.floor(Math.random() * 25));
     imagesIndex = 0;
   }
 
   if (num <= LIMIT - 1) {
-    document.getElementById('featured').innerHTML = "<img src='" + images[imagesIndex].src + "' class='featured-image' id='" + images[imagesIndex].id + "' />";
+    document.getElementById('featured').innerHTML = (
+      "<img src='" + images[imagesIndex].src + "' class='featured-image' id='" + images[imagesIndex].id + "' />"
+    );
 
     // set gallery image active state
     // if featured image id matches gallery image id
     // gallery image is active
+    // TODO
     if (document.getElementById('featured').children[0].id === images[imagesIndex].id) {
-      // console.log('active image: ', images[imagesIndex]);
       images[imagesIndex].className = 'gallery-image active';
-    } else {
-      for (let img in images) {
-        images[img].className = images[img].className.replace(' active', '');
-      }
     }
 
     setFeaturedImageCaption();
@@ -141,11 +137,10 @@ loopImages = (n) => {
   checkCurrentNumber(n);
 }
 
-ajaxCall = (searchInput, offsetNum) => {
-  console.log(searchInput);
+ajaxCall = (offsetNum) => {
   const xhr = new XMLHttpRequest();
   let query = {
-    text: searchInput,
+    text: document.getElementById('gif-input').value,
     offset: offsetNum,
     request() {
       return `${BASE_URL}${ENDPOINT}?q=${this.text}&limit=${LIMIT}&offset=${this.offset}&api_key=${API_KEY}`;
@@ -153,7 +148,7 @@ ajaxCall = (searchInput, offsetNum) => {
   };
 
   if (offsetNum !== 0) {
-    document.getElementById('gallery').innerHTML = '';
+    gallery.innerHTML = '';
   }
 
   xhr.onreadystatechange = () => {
@@ -177,18 +172,18 @@ onSuccess = (json) => {
 }
 
 onError = (xhr, status) => {
-  document.getElementById('error-message').innerHTML = "<p class='text-center white'>" + status + " error. Sorry about that.</p>";
-  console.log(`Error: status ${status}`);
-  console.dir(xhr);
+  document.getElementById('error-message').innerHTML = (
+    "<p class='text-center white'>" + status + " error. Sorry about that.</p>"
+  );
 }
 
 searchGifs = () => {
   document.getElementById('search-form').addEventListener('submit', (e) => {
     e.preventDefault();
-    document.getElementById('gallery').innerHTML = '';
+    gallery.innerHTML = '';
     document.getElementById('error-message').innerHTML = '';
     document.getElementsByClassName('featured-container')[0].style.visibility = 'hidden';
-    ajaxCall(document.getElementById('gif-input').value, 0);
+    ajaxCall(0);
   });
 }
 
