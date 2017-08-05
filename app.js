@@ -49,7 +49,6 @@ displayButtons = (visibility) => {
   }
 }
 
-
 setInitialFeaturedImage = (imgUrl, username, source) => {
   document.getElementById('featured').innerHTML = (
     "<img src='" + imgUrl + "' class='featured-image' id='0' />"
@@ -114,7 +113,7 @@ moveThroughGallery = (n) => {
   setActiveState(n);
 }
 
-// this breaks at the beginning of the gallery and at the end 
+// this breaks at the beginning of the gallery and at the end
 setActiveState = (n) => {
     images[imagesIndex - 1].className  = images[imagesIndex - 1].className.replace(' active', '');
     images[imagesIndex + 1].className = images[imagesIndex + 1].className.replace(' active', '');
@@ -141,10 +140,6 @@ checkCurrentNumber = (num) => {
       "<img src='" + images[imagesIndex].src + "' class='featured-image' id='" + images[imagesIndex].id + "' />"
     );
 
-    // set gallery image active state
-    // if featured image id matches gallery image id
-    // gallery image is active
-    // TODO
     if (document.getElementById('featured').children[0].id === images[imagesIndex].id) {
       images[imagesIndex].className = 'gallery-image active';
       console.log('this is the active image ', images[imagesIndex]);
