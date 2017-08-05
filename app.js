@@ -11,10 +11,10 @@ const gallery = document.getElementById('gallery');
 document.onkeydown = (addHoveredClass = (e) => {
   if (e.keyCode === 37) {
     previousButton.className = 'arrow hovered';
-    nextImage(-1);
+    moveThroughGallery(-1);
   } else if (e.keyCode === 39) {
     nextButton.className = 'arrow hovered';
-    nextImage(1);
+    moveThroughGallery(1);
   }
 });
 
@@ -26,6 +26,19 @@ document.onkeyup = (removeHoveredClass = (e) => {
   }
 });
 
+// displayButtons = (visibility) => {
+//   return (visibility === 'visible'
+//     ? () => {
+//       nextButton.style.visibility = 'visible';
+//       previousButton.style.visibility = 'visible';
+//     }
+//     : () => {
+//       nextButton.style.visibility = 'hidden';
+//       previousButton.style.visibility = 'hidden';
+//     }
+//   );
+// }
+
 displayButtons = (visibility) => {
   if (visibility === 'visible') {
     nextButton.style.visibility = 'visible';
@@ -35,6 +48,7 @@ displayButtons = (visibility) => {
     previousButton.style.visibility = 'hidden';
   }
 }
+
 
 setInitialFeaturedImage = (imgUrl, username, source) => {
   document.getElementById('featured').innerHTML = (
@@ -71,8 +85,10 @@ showAllGifs = (json) => {
       col.setAttribute('class', 'col');
 
       col.innerHTML = (
-        "<img src='" + gif.images.fixed_height.url + "' class='gallery-image' onclick='selectImageFromGallery(parseInt(this.id))' id='" + i + "' />" +
-        "<p id='" + i + "' style='display:none'>Source: " + getImageCaption(gif.username, gif.source_tld) + "</p>"
+        "<img src='" + gif.images.fixed_height.url +
+        "' class='gallery-image' onclick='selectImageFromGallery(parseInt(this.id))' id='" +
+         i + "' />" + "<p id='" + i + "' style='display:none'>Source: " +
+        getImageCaption(gif.username, gif.source_tld) + "</p>"
       );
 
       gallery.appendChild(col);
@@ -93,8 +109,15 @@ setFeaturedImageCaption = () => {
   }
 }
 
-nextImage = (n) => {
+moveThroughGallery = (n) => {
   loopImages(imagesIndex += n);
+  setActiveState(n);
+}
+
+// this breaks at the beginning of the gallery and at the end 
+setActiveState = (n) => {
+    images[imagesIndex - 1].className  = images[imagesIndex - 1].className.replace(' active', '');
+    images[imagesIndex + 1].className = images[imagesIndex + 1].className.replace(' active', '');
 }
 
 selectImageFromGallery = (n) => {
@@ -124,6 +147,7 @@ checkCurrentNumber = (num) => {
     // TODO
     if (document.getElementById('featured').children[0].id === images[imagesIndex].id) {
       images[imagesIndex].className = 'gallery-image active';
+      console.log('this is the active image ', images[imagesIndex]);
     }
 
     setFeaturedImageCaption();

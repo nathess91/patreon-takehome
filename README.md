@@ -1,6 +1,6 @@
 # Patreon Web Take Home Assignment
 
-<img src="http://i.imgur.com/si0UGjW.png" width="150">
+<img src="http://i.imgur.com/si0UGjW.png" width="150" alt="Jif Logo" title="Jif Logo">
 
 _"The most controversially-named gif search engine. Go argue with your friends about it."_
 
@@ -20,7 +20,7 @@ You can use any public API that returns photos.
 
 1. `git clone` this repo and open it in your browser
 2. Check it out on Heroku: [link here]
-3. Check it out on CodePen: [link here]
+3. Check it out on CodePen: https://codepen.io/natawls/pen/QMGYQj
 
 ## Design
 
@@ -58,10 +58,6 @@ When a gif in the gallery is featured in the lightbox view, its gallery counterp
 * User can't move to the previous image if they are looking at the first image in the gallery and button gets disabled state
 * If the gif doesn't have a username or url source associated with it (pulled from the JSON object), the caption displays "No image source"
 * If no search results are found, a "No results found" error message is displayed on the screen
-
-## Personal Challenges
-
-<!-- TO DO -->
 
 ## Future Additions
 
