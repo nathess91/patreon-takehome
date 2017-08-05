@@ -10,34 +10,21 @@ const gallery = document.getElementById('gallery');
 
 document.onkeydown = (addHoveredClass = (e) => {
   if (e.keyCode === 37) {
-    previousButton.className = 'arrow hovered';
+    previousButton.classList.toggle('hovered');
     moveThroughGallery(-1);
   } else if (e.keyCode === 39) {
-    nextButton.className = 'arrow hovered';
+    nextButton.classList.toggle('hovered');
     moveThroughGallery(1);
   }
 });
 
 document.onkeyup = (removeHoveredClass = (e) => {
   if (e.keyCode === 37) {
-    previousButton.className = previousButton.className.replace(' hovered', '');
+    previousButton.classList.remove('hovered');
   } else if (e.keyCode === 39) {
-    nextButton.className = nextButton.className.replace(' hovered', '');
+    nextButton.classList.remove('hovered');
   }
 });
-
-// displayButtons = (visibility) => {
-//   return (visibility === 'visible'
-//     ? () => {
-//       nextButton.style.visibility = 'visible';
-//       previousButton.style.visibility = 'visible';
-//     }
-//     : () => {
-//       nextButton.style.visibility = 'hidden';
-//       previousButton.style.visibility = 'hidden';
-//     }
-//   );
-// }
 
 displayButtons = (visibility) => {
   if (visibility === 'visible') {
@@ -110,17 +97,31 @@ setFeaturedImageCaption = () => {
 
 moveThroughGallery = (n) => {
   loopImages(imagesIndex += n);
-  setActiveState(n);
+  setActiveState();
 }
 
-// this breaks at the beginning of the gallery and at the end
-setActiveState = (n) => {
-    images[imagesIndex - 1].className  = images[imagesIndex - 1].className.replace(' active', '');
-    images[imagesIndex + 1].className = images[imagesIndex + 1].className.replace(' active', '');
+// console error
+setActiveState = () => {
+  console.log('setActiveState image index', imagesIndex);
+  console.log('imagesIndex plus one', imagesIndex + 1);
+  console.log('imagesIndex minus one', imagesIndex - 1);
+  // move forward - remove active state from previous
+  if (imagesIndex > 0) {
+    images[imagesIndex - 1].classList.remove('active');
+  }
+  // // move backward - remove active state from subsequent
+  if (imagesIndex < 6) {
+    images[imagesIndex + 1].classList.remove('active');
+  }
 }
 
 selectImageFromGallery = (n) => {
   loopImages(imagesIndex = n);
+  for (let gif in images) {
+    if (images[gif].id !== document.getElementById('featured').children[0].id) {
+      images[gif].classList.remove('active');
+    }
+  }
 }
 
 checkCurrentNumber = (num) => {
@@ -141,8 +142,7 @@ checkCurrentNumber = (num) => {
     );
 
     if (document.getElementById('featured').children[0].id === images[imagesIndex].id) {
-      images[imagesIndex].className = 'gallery-image active';
-      console.log('this is the active image ', images[imagesIndex]);
+      images[imagesIndex].classList.toggle('active');
     }
 
     setFeaturedImageCaption();
@@ -151,7 +151,7 @@ checkCurrentNumber = (num) => {
 
 loopImages = (n) => {
   previousButton.disabled = false;
-  previousButton.className = previousButton.className.replace(' disabled', '');
+  previousButton.classList.remove('disabled');
 
   checkCurrentNumber(n);
 }
