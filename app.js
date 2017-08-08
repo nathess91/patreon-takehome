@@ -1,8 +1,7 @@
 'use strict';
 
 const API_KEY = '72a030c9d43c47f1a4a31d87f636be6f';
-const BASE_URL = 'https://api.giphy.com/v1/gifs/';
-const ENDPOINT = 'search';
+const ENDPOINT = 'https://api.giphy.com/v1/gifs/search';
 const KEYCODE_LEFT_KEY = 37;
 const KEYCODE_RIGHT_KEY = 39;
 const previousButtonEl = document.querySelector('.previous-button');
@@ -12,20 +11,23 @@ const galleryEl = document.querySelector('.gallery');
 const featuredEl = document.querySelector('.featured-gif-wrapper');
 const captionEl = document.querySelector('.featured-gif-caption');
 const errorMessageEl = document.querySelector('.error-message');
+const searchInputEl = document.querySelector('.gif-input');
 
 
 function getAjaxRequestLimit() {
   return (window.innerWidth < 768 ? 6 : 7);
 }
 
+ // The offsetNum is the number responsible for fetching gifs from a determined starting point. For a new search,
+// the offset will always start at 0, but any subsequent query offsets within the same search will use Math.random to pull a new set of gifs.
 function loadGifsViaApiCall(offsetNum) {
   let ajaxRequestLimit = (getAjaxRequestLimit());
   const xhr = new XMLHttpRequest();
   let query = {
-    text: document.querySelector('.gif-input').value,
+    text: searchInputEl.value,
     offset: offsetNum,
     request() {
-      return `${BASE_URL}${ENDPOINT}?q=${this.text}&limit=${ajaxRequestLimit}&offset=${this.offset}&api_key=${API_KEY}`;
+      return `${ENDPOINT}?q=${this.text}&limit=${ajaxRequestLimit}&offset=${this.offset}&api_key=${API_KEY}`;
     }
   };
 
@@ -35,9 +37,7 @@ function loadGifsViaApiCall(offsetNum) {
 
   xhr.onreadystatechange = () => {
     if (xhr.readyState === 4 && xhr.status === 200) {
-      const res = JSON.parse(xhr.responseText);
-
-      onSuccess(res);
+      onSuccess(JSON.parse(xhr.responseText));
     }
     else if (xhr.status !== 200 && xhr.status !== 0) {
       onError(xhr, xhr.status);
@@ -49,7 +49,7 @@ function loadGifsViaApiCall(offsetNum) {
 }
 
 function onSuccess(giphyApiResponse) {
-  document.querySelector('.gif-input').style.outline = 'none';
+  searchInputEl.style.outline = 'none';
   showAllGifs(giphyApiResponse);
 }
 
@@ -72,8 +72,6 @@ function addHoveredClass(e) {
   }
 }
 
-document.onkeydown = (addHoveredClass);
-
 function removeHoveredClass(e) {
   if (e.keyCode === KEYCODE_LEFT_KEY) {
     previousButtonEl.classList.remove('hovered');
@@ -81,8 +79,6 @@ function removeHoveredClass(e) {
     nextButtonEl.classList.remove('hovered');
   }
 }
-
-document.onkeyup = (removeHoveredClass);
 
 function displayButtons(visibility) {
   if (visibility === 'visible') {
@@ -123,9 +119,9 @@ function getImageCaption(username, source) {
 function setNoResultsErrorMessage() {
   let errorParagraphEl = document.createElement('p');
   let errorText = document.createTextNode('No results found :(');
+
   errorParagraphEl.setAttribute('class', 'text-center white');
   errorParagraphEl.appendChild(errorText);
-
   errorMessageEl.appendChild(errorParagraphEl);
 }
 
@@ -136,9 +132,14 @@ function showAllGifs(giphyApiResponse) {
   } else {
     document.getElementsByClassName('featured-container')[0].style.visibility = 'visible';
     displayButtons('visible');
-    setInitialFeaturedImage(giphyApiResponse.data[0].images.fixed_height.url, giphyApiResponse.data[0].username, giphyApiResponse.data[0].source_tld);
 
-    giphyApiResponse.data.forEach((gif, i) => {
+    setInitialFeaturedImage(
+      giphyApiResponse.data[0].images.fixed_height.url,
+      giphyApiResponse.data[0].username,
+      giphyApiResponse.data[0].source_tld
+    );
+
+    giphyApiResponse.data.forEach((gif, index) => {
       const col = document.createElement('div');
       const img = document.createElement('img');
 
@@ -147,7 +148,7 @@ function showAllGifs(giphyApiResponse) {
       col.innerHTML = (
         "<img src='" + gif.images.fixed_height.url +
         "' class='gallery-image' onclick='selectImageFromGallery(parseInt(this.id))' id='" +
-         i + "' />" + "<p id='" + i + "' style='display:none'>Source: " +
+         index + "' />" + "<p id='" + index + "' style='display:none'>Source: " +
         getImageCaption(gif.username, gif.source_tld) + "</p>"
       );
 
@@ -171,23 +172,17 @@ function setFeaturedImageCaption() {
 
 function moveThroughGallery(n) {
   loopImages(imagesIndex += n);
-  setActiveState();
+  removeActiveState();
 }
 
-// console error
-function setActiveState() {
-  console.log('setActiveState image index', imagesIndex);
-  console.log('imagesIndex plus one', imagesIndex + 1);
-  console.log('imagesIndex minus one', imagesIndex - 1);
-  // move forward - remove active state from previous
-  if (imagesIndex > 0) {
-    images[imagesIndex - 1].classList.remove('active');
-  }
-  // // move backward - remove active state from subsequent
-  if (imagesIndex < 6) {
-    images[imagesIndex + 1].classList.remove('active');
+function removeActiveState() {
+  for (let i = 0; i < images.length; i++) {
+    if (images[i].id !== featuredEl.children[0].id) {
+      images[i].classList.remove('active');
+    }
   }
 }
+
 
 function selectImageFromGallery(n) {
   loopImages(imagesIndex = n);
@@ -198,7 +193,7 @@ function selectImageFromGallery(n) {
   }
 }
 
-function checkCurrentNumber(num) {
+function keepTrackOfCurrentPositionInGallery(num) {
   let ajaxRequestLimit = (getAjaxRequestLimit());
   if (num <= 0) {
     previousButtonEl.disabled = true;
@@ -217,7 +212,7 @@ function checkCurrentNumber(num) {
     );
 
     if (featuredEl.children[0].id === images[imagesIndex].id) {
-      images[imagesIndex].classList.toggle('active');
+      images[imagesIndex].classList.add('active');
     }
 
     setFeaturedImageCaption();
@@ -228,19 +223,16 @@ function loopImages(n) {
   previousButtonEl.disabled = false;
   previousButtonEl.classList.remove('disabled');
 
-  checkCurrentNumber(n);
+  keepTrackOfCurrentPositionInGallery(n);
 }
 
-function searchGifs() {
-  document.querySelector('.search-form').addEventListener('submit', (e) => {
-    e.preventDefault();
-    galleryEl.innerHTML = '';
-    errorMessageEl.innerHTML = '';
-    document.querySelector('.featured-container').style.visibility = 'hidden';
-    loadGifsViaApiCall(0);
-  });
-}
-
-document.addEventListener('DOMContentLoaded', () => {
-  searchGifs();
+// This is the listener than activates a Giphy AJAX call upon a query submission.
+document.querySelector('.search-form').addEventListener('submit', (e) => {
+  e.preventDefault();
+  galleryEl.innerHTML = '';
+  errorMessageEl.innerHTML = '';
+  document.querySelector('.featured-container').style.visibility = 'hidden';
+  loadGifsViaApiCall(0);
 });
+document.onkeydown = (addHoveredClass);
+document.onkeyup = (removeHoveredClass);
