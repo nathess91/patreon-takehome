@@ -130,8 +130,6 @@ function showAllGifs(giphyApiResponse) {
     displayButtons('hidden');
     setNoResultsErrorMessage();
   } else {
-    document.onkeydown = (addHoveredClass);
-    document.onkeyup = (removeHoveredClass);
     document.getElementsByClassName('featured-container')[0].style.visibility = 'visible';
     displayButtons('visible');
 
@@ -236,3 +234,5 @@ document.querySelector('.search-form').addEventListener('submit', (e) => {
   document.querySelector('.featured-container').style.visibility = 'hidden';
   loadGifsViaApiCall(0);
 });
+document.onkeydown = (addHoveredClass);
+document.onkeyup = (removeHoveredClass);
