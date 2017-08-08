@@ -16,10 +16,12 @@ We ask that you do not use any 3rd party libraries in your application code (thi
 
 You can use any public API that returns photos.
 
-### Installation
+### Installation / Viewing
 
 1. `git clone` this repo and open it in your browser
-2. Check it out on CodePen: https://codepen.io/natawls/pen/QMGYQj
+2. `cd` into it and open `index.html` in your favorite browser
+
+**OR** check it out on CodePen: https://codepen.io/natawls/pen/QMGYQj
 
 ## Design
 
