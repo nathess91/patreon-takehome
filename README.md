@@ -2,7 +2,7 @@
 
 <img src="http://i.imgur.com/si0UGjW.png" width="150" alt="Jif Logo" title="Jif Logo">
 
-_"The most controversially-named gif search engine. Go argue with your friends about it."_
+*"The most controversially-named gif search engine. Go argue with your friends about it."*
 
 This no-frills single page web app pulls gifs from the [GIPHY API](https://developers.giphy.com/) and displays the current gif in a lightbox using ~~chocolate~~ vanilla JavaScript, CSS, and HTML.
 
@@ -19,8 +19,7 @@ You can use any public API that returns photos.
 ### Installation
 
 1. `git clone` this repo and open it in your browser
-2. Check it out on Heroku: [link here]
-3. Check it out on CodePen: https://codepen.io/natawls/pen/QMGYQj
+2. Check it out on CodePen: https://codepen.io/natawls/pen/QMGYQj
 
 ## Design
 
