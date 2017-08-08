@@ -1,3 +1,5 @@
+'use strict';
+
 const API_KEY = '72a030c9d43c47f1a4a31d87f636be6f';
 const BASE_URL = 'https://api.giphy.com/v1/gifs/';
 const ENDPOINT = 'search';
@@ -58,16 +60,6 @@ function onError(xhr, status) {
   errorParagraphEl.setAttribute('class', 'text-center white');
   errorParagraphEl.appendChild(errorText);
   errorMessageEl.appendChild(errorParagraphEl);
-}
-
-function searchGifs() {
-  document.querySelector('.search-form').addEventListener('submit', (e) => {
-    e.preventDefault();
-    galleryEl.innerHTML = '';
-    errorMessageEl.innerHTML = '';
-    document.getElementsByClassName('featured-container')[0].style.visibility = 'hidden';
-    loadGifsViaApiCall(0);
-  });
 }
 
 function addHoveredClass(e) {
@@ -237,6 +229,16 @@ function loopImages(n) {
   previousButtonEl.classList.remove('disabled');
 
   checkCurrentNumber(n);
+}
+
+function searchGifs() {
+  document.querySelector('.search-form').addEventListener('submit', (e) => {
+    e.preventDefault();
+    galleryEl.innerHTML = '';
+    errorMessageEl.innerHTML = '';
+    document.querySelector('.featured-container').style.visibility = 'hidden';
+    loadGifsViaApiCall(0);
+  });
 }
 
 document.addEventListener('DOMContentLoaded', () => {
